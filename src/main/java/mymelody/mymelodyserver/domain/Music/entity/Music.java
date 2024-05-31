@@ -15,6 +15,8 @@ public class Music extends BaseTimeEntity {
     @Column(name = "music_id")
     private Long id;
 
+    private String isrc;
+
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
