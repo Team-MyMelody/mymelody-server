@@ -18,7 +18,7 @@ public class MyMelody extends BaseTimeEntity {
     private Long id;
 
     private double latitude; //위도
-    private double longtitude; //경도
+    private double longitude; //경도
 
     private String comment;
 
