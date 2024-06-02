@@ -24,6 +24,6 @@ public class PageRequest {
 
     public org.springframework.data.domain.PageRequest of() {
         return org.springframework.data.domain.PageRequest.of(page - 1, size, direction,
-                "create_date");
+                "createdAt");
     }
 }
