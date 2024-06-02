@@ -20,3 +20,9 @@ spring:
 
 jwt:
   secretKey: ${JWT_SECRET_KEY}
+
+  spotify:
+    client:
+      id: ${SPOTIFY_CLIENT_ID}
+      secret: ${SPOTIFY_CLIENT_SECRET}
+    redirectURI: ${SPOTIFY_REDIRECT_URI}
