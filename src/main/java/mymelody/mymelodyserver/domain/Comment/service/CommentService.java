@@ -2,13 +2,18 @@ package mymelody.mymelodyserver.domain.Comment.service;
 
 import lombok.RequiredArgsConstructor;
 import mymelody.mymelodyserver.domain.Comment.dto.request.CreateComment;
+import mymelody.mymelodyserver.domain.Comment.dto.response.GetCommentsByMyMelody;
+import mymelody.mymelodyserver.domain.Comment.entity.Comment;
 import mymelody.mymelodyserver.domain.Comment.repository.CommentRepository;
 import mymelody.mymelodyserver.domain.Member.entity.Member;
 import mymelody.mymelodyserver.domain.Member.repository.MemberRepository;
 import mymelody.mymelodyserver.domain.MyMelody.entity.MyMelody;
 import mymelody.mymelodyserver.domain.MyMelody.repository.MyMelodyRepository;
+import mymelody.mymelodyserver.global.common.PageRequest;
 import mymelody.mymelodyserver.global.entity.ErrorCode;
 import mymelody.mymelodyserver.global.exception.CustomException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,5 +34,15 @@ public class CommentService {
                 () -> new CustomException(ErrorCode.MYMELODY_NOT_FOUND));
 
         commentRepository.save(createComment.toEntity(member, myMelody));
+    }
+
+    public GetCommentsByMyMelody getCommentsByMyMelody(Long myMelodyId, PageRequest pageRequest) {
+        MyMelody myMelody = myMelodyRepository.findById(myMelodyId).orElseThrow(
+                () -> new CustomException(ErrorCode.MYMELODY_NOT_FOUND));
+
+        Pageable pageable = pageRequest.of();
+        Page<Comment> comments = commentRepository.findAllByMyMelody(myMelody, pageable);
+
+        return GetCommentsByMyMelody.of(comments);
     }
 }
