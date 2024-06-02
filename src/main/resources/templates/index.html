@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div id="loginContent">
+<!--    <span th:if="${session.JwtAccessToken == null}">-->
+    <span>
+        <a href="https://accounts.spotify.com/authorize?client_id=5abfa346e64045d59b3c1f492b3268ad&redirect_uri=http://localhost:8080/api/v1/auth/login&response_type=code">
+            <button value="스포티파이로그인">스포티파이로그인</button>
+        </a>
+    </span>
+<!--    <span th:if="${session.JwtAccessToken != null}">-->
+<!--        <b>[로그인 성공]</b>-->
+<!--        <br><br>-->
+<!--        <a href="http://localhost:8080/wowmarket/users/kakao/unlink">-->
+<!--            <button value="연결끊기">연결끊기</button>-->
+<!--        </a>-->
+<!--        <br><br>-->
+<!--        <a href="http://localhost:8080/wowmarket/users/logout/kakao">-->
+<!--            <button value="로그아웃">로그아웃</button>-->
+<!--        </a>-->
+<!--    </span>-->
+</div>
