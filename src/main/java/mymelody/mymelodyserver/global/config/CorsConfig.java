@@ -11,6 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         ArrayList<String> allowedOriginPatterns = new ArrayList<>();
+        allowedOriginPatterns.add("*");
         allowedOriginPatterns.add("http://localhost:3000");
         allowedOriginPatterns.add("http://localhost:8080");
         //추가
