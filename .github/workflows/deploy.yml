@@ -19,12 +19,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Make .env
-        run: |
-          touch ./.env
-          echo "${{ secrets.PROPERTIES }}" > ./.env
-        shell: bash
-
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
