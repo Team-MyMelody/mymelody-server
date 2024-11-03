@@ -2,6 +2,7 @@ package mymelody.mymelodyserver.global.auth.security;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import mymelody.mymelodyserver.domain.Member.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,10 +16,15 @@ public class CustomUserDetails implements UserDetails {
     private final Collection<GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return null;
-//    }
+    public CustomUserDetails(Member member, Collection<GrantedAuthority> authorities) {
+        this.memberId = member.getId();
+        this.authorities = authorities;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 
     @Override
     public String getPassword() {

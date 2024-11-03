@@ -22,6 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String spotifyId) throws UsernameNotFoundException {
         Member member = memberRepository.findBySpotifyId(spotifyId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-        return new CustomUserDetails(member.getId(), Collections.singleton(new SimpleGrantedAuthority("USER")));
+        return new CustomUserDetails(member, Collections.singleton(new SimpleGrantedAuthority("USER")));
     }
 }
