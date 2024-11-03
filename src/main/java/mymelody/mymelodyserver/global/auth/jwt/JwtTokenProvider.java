@@ -110,4 +110,16 @@ public class JwtTokenProvider implements InitializingBean {
                 .getSubject();
     }
 
+    public Long getExpiration(String token) {
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+        long now = new Date().getTime();
+
+        return expiration.getTime() - now;
+    }
+
 }
