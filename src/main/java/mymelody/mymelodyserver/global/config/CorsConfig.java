@@ -14,6 +14,7 @@ public class CorsConfig implements WebMvcConfigurer {
         allowedOriginPatterns.add("*");
         allowedOriginPatterns.add("http://localhost:3000");
         allowedOriginPatterns.add("http://localhost:8080");
+        allowedOriginPatterns.add("https://mymelody.shop");
         //추가
         String[] patterns = allowedOriginPatterns.toArray(String[]::new);
         registry.addMapping("/**")
