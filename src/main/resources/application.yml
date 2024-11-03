@@ -6,6 +6,10 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -17,3 +21,12 @@ spring:
         database-platform: org.hibernate.dialect.MySQL8Dialect
         show_sql: true
         format_sql: true
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+
+spotify:
+  client:
+    id: ${SPOTIFY_CLIENT_ID}
+    secret: ${SPOTIFY_CLIENT_SECRET}
+  redirectURI: ${SPOTIFY_REDIRECT_URI}
