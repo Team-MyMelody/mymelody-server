@@ -17,7 +17,6 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     private String spotifyId;
-//    private String spotifyAccessToken;
     private String name;
     private String nickname;
     private String email;
@@ -25,4 +24,10 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("\"USER\"")
     private Role role;
+
+    private String refreshToken;
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
