@@ -26,6 +26,9 @@ public class MyMelody extends BaseTimeEntity {
     @ColumnDefault("0")
     private int totalLikes;
 
+    @ColumnDefault("0")
+    private int totalComments;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
@@ -40,5 +43,9 @@ public class MyMelody extends BaseTimeEntity {
 
     public void decreaseTotalLikes() {
         this.totalLikes--;
+    }
+
+    public void increaseTotalComments() {
+        this.totalComments++;
     }
 }
