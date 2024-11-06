@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import mymelody.mymelodyserver.domain.Member.entity.Member;
 import mymelody.mymelodyserver.domain.Music.entity.Music;
 import mymelody.mymelodyserver.global.entity.BaseTimeEntity;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -22,7 +23,8 @@ public class MyMelody extends BaseTimeEntity {
 
     private String comment;
 
-    private int totalLikes = 0;
+    @ColumnDefault("0")
+    private int totalLikes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
