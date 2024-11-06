@@ -21,7 +21,7 @@ public class MyMelody extends BaseTimeEntity {
     private double latitude; //위도
     private double longitude; //경도
 
-    private String comment;
+    private String content;
 
     @ColumnDefault("0")
     private int totalLikes;
