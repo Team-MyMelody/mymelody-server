@@ -17,6 +17,7 @@ import mymelody.mymelodyserver.global.entity.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,5 +62,29 @@ public class CommentController {
     public ResponseEntity<GetCommentsByMyMelody> getCommentsByMyMelody(@PathVariable Long myMelodyId,
             PageRequest pageRequest) {
         return ResponseEntity.ok(commentService.getCommentsByMyMelody(myMelodyId, pageRequest));
+    }
+
+    @Operation(summary = "comment 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "삭제를 요청한 사용자가 작성한 댓글이 아님",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    1. 존재하지 않는 사용자
+                    2. 존재하지 않는 comment""",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @Parameters({
+            @Parameter(name = "commentId", description = "comment 아이디")
+    })
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        commentService.deleteComment(commentId, customUserDetails.getMemberId());
+        return ResponseEntity.ok().build();
     }
 }
