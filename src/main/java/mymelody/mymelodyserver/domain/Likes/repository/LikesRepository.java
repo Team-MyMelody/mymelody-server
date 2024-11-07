@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface LikesRepository extends JpaRepository<Likes, Long> {
 
     Optional<Likes> findByMyMelodyAndMember(MyMelody myMelody, Member member);
+    Boolean existsByMyMelodyAndMember(MyMelody myMelody, Member member);
 }

@@ -59,7 +59,8 @@ public class CommentController {
     })
     @GetMapping("/mymelody/{myMelodyId}")
     public ResponseEntity<GetCommentsByMyMelody> getCommentsByMyMelody(@PathVariable Long myMelodyId,
-            PageRequest pageRequest) {
-        return ResponseEntity.ok(commentService.getCommentsByMyMelody(myMelodyId, pageRequest));
+            PageRequest pageRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(commentService.getCommentsByMyMelody(myMelodyId, pageRequest,
+                customUserDetails == null ? 0 : customUserDetails.getMemberId()));
     }
 }

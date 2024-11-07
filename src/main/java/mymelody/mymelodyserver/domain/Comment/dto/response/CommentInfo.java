@@ -11,13 +11,14 @@ import mymelody.mymelodyserver.domain.Comment.entity.Comment;
 public class CommentInfo {
 
     private final Long commentId;
-    private final Long memberId;
+    private final String nickname;
     private final String content;
+    private final Boolean isWriter;
 
-    public static List<CommentInfo> of(List<Comment> comments) {
+    public static List<CommentInfo> of(List<Comment> comments, Long memberId) {
         return comments.stream()
-                .map(comment -> new CommentInfo(comment.getId(), comment.getMember().getId(),
-                        comment.getContent()))
+                .map(comment -> new CommentInfo(comment.getId(), comment.getMember().getNickname(),
+                        comment.getContent(), comment.getMember().getId().equals(memberId)))
                 .toList();
     }
 }

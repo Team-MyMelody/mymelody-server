@@ -37,13 +37,18 @@ public class CommentService {
         myMelody.increaseTotalComments();
     }
 
-    public GetCommentsByMyMelody getCommentsByMyMelody(Long myMelodyId, PageRequest pageRequest) {
+    public GetCommentsByMyMelody getCommentsByMyMelody(Long myMelodyId, PageRequest pageRequest,
+            Long memberId) {
         MyMelody myMelody = myMelodyRepository.findById(myMelodyId).orElseThrow(
                 () -> new CustomException(ErrorCode.MYMELODY_NOT_FOUND));
 
         Pageable pageable = pageRequest.of();
         Page<Comment> comments = commentRepository.findAllByMyMelody(myMelody, pageable);
 
-        return GetCommentsByMyMelody.of(comments);
+        if (memberId != 0 && !memberRepository.existsById(memberId)) {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        return GetCommentsByMyMelody.of(comments, memberId);
     }
 }
