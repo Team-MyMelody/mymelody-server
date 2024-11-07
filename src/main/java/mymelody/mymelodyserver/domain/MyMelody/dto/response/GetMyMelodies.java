@@ -7,14 +7,14 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class GetMyMelodiesByLocation {
+public class GetMyMelodies {
 
     private final int totalPages;
     private final long totalElements;
     private final List<MyMelodyInfo> myMelodyInfos;
 
-    public static GetMyMelodiesByLocation of(int totalPages, long totalElements,
+    public static GetMyMelodies of(int totalPages, long totalElements,
             List<MyMelodyInfo> myMelodyInfos) {
-        return new GetMyMelodiesByLocation(totalPages, totalElements, myMelodyInfos);
+        return new GetMyMelodies(totalPages, totalElements, myMelodyInfos);
     }
 }

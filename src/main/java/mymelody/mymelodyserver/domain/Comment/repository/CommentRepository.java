@@ -1,6 +1,7 @@
 package mymelody.mymelodyserver.domain.Comment.repository;
 
 import mymelody.mymelodyserver.domain.Comment.entity.Comment;
+import mymelody.mymelodyserver.domain.Member.entity.Member;
 import mymelody.mymelodyserver.domain.MyMelody.entity.MyMelody;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Page<Comment> findAllByMyMelody(MyMelody myMelody, Pageable pageable);
+    Page<Comment> findAllByMember(Member member, Pageable pageable);
 }
