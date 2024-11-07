@@ -11,10 +11,12 @@ import lombok.RequiredArgsConstructor;
 import mymelody.mymelodyserver.domain.Comment.dto.request.CreateComment;
 import mymelody.mymelodyserver.domain.Comment.dto.response.GetCommentsByMyMelody;
 import mymelody.mymelodyserver.domain.Comment.service.CommentService;
+import mymelody.mymelodyserver.global.auth.security.CustomUserDetails;
 import mymelody.mymelodyserver.global.common.PageRequest;
 import mymelody.mymelodyserver.global.entity.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,9 +42,9 @@ public class CommentController {
             )
     })
     @PostMapping
-    public ResponseEntity<Void> createComment(@RequestBody CreateComment createComment) {
-        // TODO spring security 적용 후 authenticationPrincipal로 사용자 정보 받아오는 코드 추가
-        commentService.createComment(createComment, 1L);
+    public ResponseEntity<Void> createComment(@RequestBody CreateComment createComment,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        commentService.createComment(createComment, customUserDetails.getMemberId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

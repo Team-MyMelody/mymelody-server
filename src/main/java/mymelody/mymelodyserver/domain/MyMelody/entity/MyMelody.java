@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import mymelody.mymelodyserver.domain.Member.entity.Member;
 import mymelody.mymelodyserver.domain.Music.entity.Music;
 import mymelody.mymelodyserver.global.entity.BaseTimeEntity;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -20,7 +21,13 @@ public class MyMelody extends BaseTimeEntity {
     private double latitude; //위도
     private double longitude; //경도
 
-    private String comment;
+    private String content;
+
+    @ColumnDefault("0")
+    private int totalLikes;
+
+    @ColumnDefault("0")
+    private int totalComments;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -29,4 +36,16 @@ public class MyMelody extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "music_id")
     private Music music;
+
+    public void increaseTotalLikes() {
+        this.totalLikes++;
+    }
+
+    public void decreaseTotalLikes() {
+        this.totalLikes--;
+    }
+
+    public void increaseTotalComments() {
+        this.totalComments++;
+    }
 }

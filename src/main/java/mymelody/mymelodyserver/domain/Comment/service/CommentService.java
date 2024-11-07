@@ -34,6 +34,7 @@ public class CommentService {
                 () -> new CustomException(ErrorCode.MYMELODY_NOT_FOUND));
 
         commentRepository.save(createComment.toEntity(member, myMelody));
+        myMelody.increaseTotalComments();
     }
 
     public GetCommentsByMyMelody getCommentsByMyMelody(Long myMelodyId, PageRequest pageRequest) {
