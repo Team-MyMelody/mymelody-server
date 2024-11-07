@@ -3,6 +3,8 @@ package mymelody.mymelodyserver.domain.MyMelody.service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import mymelody.mymelodyserver.domain.Comment.entity.Comment;
+import mymelody.mymelodyserver.domain.Comment.repository.CommentRepository;
 import mymelody.mymelodyserver.domain.Likes.entity.Likes;
 import mymelody.mymelodyserver.domain.Likes.repository.LikesRepository;
 import mymelody.mymelodyserver.domain.Member.entity.Member;
@@ -30,6 +32,7 @@ public class MyMelodyService {
     private final MyMelodyRepository myMelodyRepository;
     private final MemberRepository memberRepository;
     private final LikesRepository likesRepository;
+    private final CommentRepository commentRepository;
 
     public GetMyMelodies getMyMelodiesByLocationWithPagination(double latitude, double longitude,
             PageRequest pageRequest, Long memberId) {
@@ -61,5 +64,19 @@ public class MyMelodyService {
                 MyMelodyInfo.of(like.getMyMelody(), IS_LIKED)).toList();
 
         return GetMyMelodies.of(likes.getTotalPages(), likes.getTotalElements(), myMelodyInfos);
+    }
+
+    public GetMyMelodies getMyMelodiesByCommentWithPagination(PageRequest pageRequest, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        Pageable pageable = pageRequest.of();
+        Page<Comment> comments = commentRepository.findAllByMember(member, pageable);
+
+        List<MyMelodyInfo> myMelodyInfos = comments.getContent().stream().map(comment ->
+                        MyMelodyInfo.of(comment.getMyMelody(),
+                                likesRepository.existsByMyMelodyAndMember(comment.getMyMelody(), member)))
+                .toList();
+
+        return GetMyMelodies.of(comments.getTotalPages(), comments.getTotalElements(), myMelodyInfos);
     }
 }
