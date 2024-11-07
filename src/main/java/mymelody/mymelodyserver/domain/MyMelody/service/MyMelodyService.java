@@ -3,10 +3,11 @@ package mymelody.mymelodyserver.domain.MyMelody.service;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import mymelody.mymelodyserver.domain.Likes.entity.Likes;
 import mymelody.mymelodyserver.domain.Likes.repository.LikesRepository;
 import mymelody.mymelodyserver.domain.Member.entity.Member;
 import mymelody.mymelodyserver.domain.Member.repository.MemberRepository;
-import mymelody.mymelodyserver.domain.MyMelody.dto.response.GetMyMelodiesByLocation;
+import mymelody.mymelodyserver.domain.MyMelody.dto.response.GetMyMelodies;
 import mymelody.mymelodyserver.domain.MyMelody.dto.response.MyMelodyInfo;
 import mymelody.mymelodyserver.domain.MyMelody.entity.MyMelody;
 import mymelody.mymelodyserver.domain.MyMelody.repository.MyMelodyRepository;
@@ -23,11 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MyMelodyService {
 
+    private static final Boolean IS_LIKED = true;
+    private static final Boolean IS_NOT_LIKED = false;
+
     private final MyMelodyRepository myMelodyRepository;
     private final MemberRepository memberRepository;
     private final LikesRepository likesRepository;
 
-    public GetMyMelodiesByLocation getMyMelodiesByLocationWithPagination(double latitude, double longitude,
+    public GetMyMelodies getMyMelodiesByLocationWithPagination(double latitude, double longitude,
             PageRequest pageRequest, Long memberId) {
         Pageable pageable = pageRequest.of();
         Page<MyMelody> myMelodies = myMelodyRepository.findAllByRange1km(latitude, longitude, pageable);
@@ -40,10 +44,22 @@ public class MyMelodyService {
             myMelodies.getContent().forEach(myMelody -> myMelodyInfos.add(MyMelodyInfo.of(myMelody,
                         likesRepository.existsByMyMelodyAndMember(myMelody, member))));
         } else {
-            myMelodies.getContent().forEach(myMelody -> myMelodyInfos.add(MyMelodyInfo.of(myMelody, false)));
+            myMelodies.getContent().forEach(myMelody -> myMelodyInfos.add(MyMelodyInfo.of(myMelody, IS_NOT_LIKED)));
         }
 
-        return GetMyMelodiesByLocation.of(myMelodies.getTotalPages(), myMelodies.getTotalElements(),
+        return GetMyMelodies.of(myMelodies.getTotalPages(), myMelodies.getTotalElements(),
                 myMelodyInfos);
+    }
+
+    public GetMyMelodies getMyMelodiesByLikesWithPagination(PageRequest pageRequest, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        Pageable pageable = pageRequest.of();
+        Page<Likes> likes = likesRepository.findAllByMember(member, pageable);
+
+        List<MyMelodyInfo> myMelodyInfos = likes.getContent().stream().map(like ->
+                MyMelodyInfo.of(like.getMyMelody(), IS_LIKED)).toList();
+
+        return GetMyMelodies.of(likes.getTotalPages(), likes.getTotalElements(), myMelodyInfos);
     }
 }
