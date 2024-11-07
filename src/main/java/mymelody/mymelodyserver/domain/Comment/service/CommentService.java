@@ -46,4 +46,18 @@ public class CommentService {
 
         return GetCommentsByMyMelody.of(comments);
     }
+
+    @Transactional
+    public void deleteComment(Long commentId, Long memberId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (!comment.getMember().equals(member)) {
+            throw new CustomException(ErrorCode.INVALID_COMMENT_DELETE_REQUEST);
+        }
+
+        commentRepository.delete(comment);
+    }
 }
