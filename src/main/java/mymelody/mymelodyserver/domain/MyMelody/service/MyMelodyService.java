@@ -79,4 +79,18 @@ public class MyMelodyService {
 
         return GetMyMelodies.of(comments.getTotalPages(), comments.getTotalElements(), myMelodyInfos);
     }
+
+    public GetMyMelodies getMyMelodiesByMemberWithPagination(PageRequest pageRequest, Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+        Pageable pageable = pageRequest.of();
+        Page<MyMelody> myMelodies = myMelodyRepository.findAllByMember(member, pageable);
+
+        List<MyMelodyInfo> myMelodyInfos = myMelodies.getContent().stream().map(myMelody ->
+                        MyMelodyInfo.of(myMelody,
+                                likesRepository.existsByMyMelodyAndMember(myMelody, member)))
+                .toList();
+
+        return GetMyMelodies.of(myMelodies.getTotalPages(), myMelodies.getTotalElements(), myMelodyInfos);
+    }
 }
