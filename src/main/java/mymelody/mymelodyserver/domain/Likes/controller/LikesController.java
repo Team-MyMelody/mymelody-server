@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import mymelody.mymelodyserver.domain.Likes.service.LikesService;
 import mymelody.mymelodyserver.global.auth.security.CustomUserDetails;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/likes")
 @RequiredArgsConstructor
+@Tag(name = "Likes", description = "좋아요 API")
 public class LikesController {
 
     private final LikesService likesService;
