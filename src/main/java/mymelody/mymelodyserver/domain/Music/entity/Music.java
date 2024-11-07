@@ -2,6 +2,7 @@ package mymelody.mymelodyserver.domain.Music.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mymelody.mymelodyserver.global.entity.BaseTimeEntity;
@@ -26,4 +27,9 @@ public class Music extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id")
     private Album album;
+
+    @Builder
+    public Music(String isrc) {
+        this.isrc = isrc;
+    }
 }
