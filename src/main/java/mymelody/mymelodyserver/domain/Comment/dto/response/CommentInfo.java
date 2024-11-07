@@ -11,8 +11,9 @@ import mymelody.mymelodyserver.domain.Comment.entity.Comment;
 public class CommentInfo {
 
     private final Long commentId;
-    private final Long memberId;
+    private final String nickname;
     private final String content;
+    private final Boolean isWriter;
 
     public static List<CommentInfo> of(List<Comment> comments) {
         return comments.stream()
