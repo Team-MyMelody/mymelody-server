@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import mymelody.mymelodyserver.domain.MyMelody.dto.response.GetMyMelodiesByLocation;
 import mymelody.mymelodyserver.domain.MyMelody.service.MyMelodyService;
+import mymelody.mymelodyserver.global.auth.security.CustomUserDetails;
 import mymelody.mymelodyserver.global.common.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,8 +36,9 @@ public class MyMelodyController {
     })
     @GetMapping("/location")
     public ResponseEntity<GetMyMelodiesByLocation> getMyMelodiesByLocation(@RequestParam double latitude,
-            @RequestParam double longitude, PageRequest pageRequest) {
+            @RequestParam double longitude, PageRequest pageRequest,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(myMelodyService.getMyMelodiesByLocationWithPagination(latitude,
-                longitude, pageRequest));
+                longitude, pageRequest, customUserDetails == null ? 0 : customUserDetails.getMemberId()));
     }
 }
