@@ -82,4 +82,23 @@ public class MyMelodyController {
         return ResponseEntity.ok(myMelodyService.getMyMelodiesByCommentWithPagination(pageRequest,
                 customUserDetails.getMemberId()));
     }
+
+    @Operation(summary = "사용자가 생성한 마이멜로디 목록 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @Parameters({
+            @Parameter(name = "page", description = "조회할 페이지 위치, default는 1"),
+            @Parameter(name = "size", description = "조회할 목록 사이즈, default는 10")
+    })
+    @GetMapping("/created")
+    public ResponseEntity<GetMyMelodies> getMyMelodiesByMember(PageRequest pageRequest,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(myMelodyService.getMyMelodiesByMemberWithPagination(pageRequest,
+                customUserDetails.getMemberId()));
+    }
 }
