@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import mymelody.mymelodyserver.domain.MyMelody.dto.request.CreateMyMelody;
 import mymelody.mymelodyserver.domain.MyMelody.dto.response.GetMyMelodies;
 import mymelody.mymelodyserver.domain.MyMelody.service.MyMelodyService;
 import mymelody.mymelodyserver.global.auth.security.CustomUserDetails;
@@ -19,13 +21,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/mymelody")
 @RequiredArgsConstructor
+@Tag(name = "MyMelody", description = "마이멜로디 API")
 public class MyMelodyController {
 
     private final MyMelodyService myMelodyService;
+
+    @Operation(summary = "지도에 마이멜로디 저장")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "저장 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @PostMapping("/create")
+    public ResponseEntity<?> createMyMelody(@RequestBody CreateMyMelody createMyMelody, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return myMelodyService.createMyMelody(createMyMelody, Long.parseLong(userDetails.getUsername()));
+    }
 
     @Operation(summary = "반경 1km 내의 마이멜로디 목록 조회")
     @ApiResponses({
@@ -39,8 +56,8 @@ public class MyMelodyController {
     })
     @GetMapping("/location")
     public ResponseEntity<GetMyMelodies> getMyMelodiesByLocation(@RequestParam double latitude,
-            @RequestParam double longitude, PageRequest pageRequest,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+                                                                 @RequestParam double longitude, PageRequest pageRequest,
+                                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(myMelodyService.getMyMelodiesByLocationWithPagination(latitude,
                 longitude, pageRequest, customUserDetails == null ? 0 : customUserDetails.getMemberId()));
     }
@@ -59,7 +76,7 @@ public class MyMelodyController {
     })
     @GetMapping("/likes")
     public ResponseEntity<GetMyMelodies> getMyMelodiesByLikes(PageRequest pageRequest,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+                                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(myMelodyService.getMyMelodiesByLikesWithPagination(pageRequest,
                 customUserDetails.getMemberId()));
     }
@@ -78,7 +95,7 @@ public class MyMelodyController {
     })
     @GetMapping("/comment")
     public ResponseEntity<GetMyMelodies> getMyMelodiesByComment(PageRequest pageRequest,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+                                                                @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(myMelodyService.getMyMelodiesByCommentWithPagination(pageRequest,
                 customUserDetails.getMemberId()));
     }
@@ -97,7 +114,7 @@ public class MyMelodyController {
     })
     @GetMapping("/created")
     public ResponseEntity<GetMyMelodies> getMyMelodiesByMember(PageRequest pageRequest,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+                                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return ResponseEntity.ok(myMelodyService.getMyMelodiesByMemberWithPagination(pageRequest,
                 customUserDetails.getMemberId()));
     }

@@ -2,6 +2,8 @@ package mymelody.mymelodyserver.domain.MyMelody.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import mymelody.mymelodyserver.domain.Comment.entity.Comment;
 import mymelody.mymelodyserver.domain.Comment.repository.CommentRepository;
@@ -9,6 +11,9 @@ import mymelody.mymelodyserver.domain.Likes.entity.Likes;
 import mymelody.mymelodyserver.domain.Likes.repository.LikesRepository;
 import mymelody.mymelodyserver.domain.Member.entity.Member;
 import mymelody.mymelodyserver.domain.Member.repository.MemberRepository;
+import mymelody.mymelodyserver.domain.Music.entity.Music;
+import mymelody.mymelodyserver.domain.Music.repository.MusicRepository;
+import mymelody.mymelodyserver.domain.MyMelody.dto.request.CreateMyMelody;
 import mymelody.mymelodyserver.domain.MyMelody.dto.response.GetMyMelodies;
 import mymelody.mymelodyserver.domain.MyMelody.dto.response.MyMelodyInfo;
 import mymelody.mymelodyserver.domain.MyMelody.entity.MyMelody;
@@ -18,6 +23,8 @@ import mymelody.mymelodyserver.global.entity.ErrorCode;
 import mymelody.mymelodyserver.global.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MyMelodyService {
-
     private static final Boolean IS_LIKED = true;
     private static final Boolean IS_NOT_LIKED = false;
 
@@ -33,9 +39,23 @@ public class MyMelodyService {
     private final MemberRepository memberRepository;
     private final LikesRepository likesRepository;
     private final CommentRepository commentRepository;
+    private final MusicRepository musicRepository;
+
+    @Transactional
+    public ResponseEntity<?> createMyMelody (CreateMyMelody createMyMelody, Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Optional<Music> optionalMusic = musicRepository.findByIsrc(createMyMelody.getIsrc());
+        Music music = optionalMusic.orElseGet(() -> musicRepository.save(new Music(createMyMelody.getIsrc())));
+
+        myMelodyRepository.save(createMyMelody.toEntity(member, music));
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     public GetMyMelodies getMyMelodiesByLocationWithPagination(double latitude, double longitude,
-            PageRequest pageRequest, Long memberId) {
+                                                               PageRequest pageRequest, Long memberId) {
         Pageable pageable = pageRequest.of();
         Page<MyMelody> myMelodies = myMelodyRepository.findAllByRange1km(latitude, longitude, pageable);
 
@@ -45,7 +65,7 @@ public class MyMelodyService {
                     () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
             myMelodies.getContent().forEach(myMelody -> myMelodyInfos.add(MyMelodyInfo.of(myMelody,
-                        likesRepository.existsByMyMelodyAndMember(myMelody, member))));
+                    likesRepository.existsByMyMelodyAndMember(myMelody, member))));
         } else {
             myMelodies.getContent().forEach(myMelody -> myMelodyInfos.add(MyMelodyInfo.of(myMelody, IS_NOT_LIKED)));
         }
@@ -93,4 +113,5 @@ public class MyMelodyService {
 
         return GetMyMelodies.of(myMelodies.getTotalPages(), myMelodies.getTotalElements(), myMelodyInfos);
     }
+
 }
