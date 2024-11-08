@@ -64,5 +64,6 @@ public class CommentService {
         }
 
         commentRepository.delete(comment);
+        comment.getMyMelody().decreaseTotalComments();
     }
 }
