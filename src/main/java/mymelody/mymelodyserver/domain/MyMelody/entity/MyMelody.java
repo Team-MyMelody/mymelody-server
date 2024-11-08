@@ -48,4 +48,8 @@ public class MyMelody extends BaseTimeEntity {
     public void increaseTotalComments() {
         this.totalComments++;
     }
+
+    public void decreaseTotalComments() {
+        this.totalComments--;
+    }
 }
