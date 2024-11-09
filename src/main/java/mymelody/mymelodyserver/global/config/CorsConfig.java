@@ -20,6 +20,8 @@ public class CorsConfig implements WebMvcConfigurer {
         allowedOriginPatterns.add("https://mymelody.shop/");
         allowedOriginPatterns.add("https://mymelody-web.vercel.app");
         allowedOriginPatterns.add("https://mymelody-web.vercel.app/");
+        allowedOriginPatterns.add("https://mymelody-web.vercel.app/callback");
+
         //추가
         String[] patterns = allowedOriginPatterns.toArray(String[]::new);
         registry.addMapping("/**")
