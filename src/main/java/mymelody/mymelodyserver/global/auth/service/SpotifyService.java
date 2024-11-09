@@ -1,6 +1,9 @@
 package mymelody.mymelodyserver.global.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import mymelody.mymelodyserver.global.entity.ErrorCode;
+import mymelody.mymelodyserver.global.exception.CustomException;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.net.URI;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class SpotifyService {
     @Value("${spotify.client.id}")
     private String clientId;
@@ -38,8 +42,9 @@ public class SpotifyService {
             return authorizationCodeCredentials.getAccessToken();
         } catch (IOException | SpotifyWebApiException | ParseException e) {
             // TODO 에러 처리 추가
+            log.info("[SpotifyService] getAccessToken Error");
             e.printStackTrace();
-            return null;
+            throw new CustomException(ErrorCode.INVALID_AUTHORIZATION_CODE);
         }
     }
 
@@ -49,11 +54,18 @@ public class SpotifyService {
         try {
             User spotifyProfile = getCurrentUsersProfileRequest.execute();
             return spotifyProfile;
-        } catch (IOException | SpotifyWebApiException | ParseException e) {
+        } catch (IOException e) {
+            log.info("[SpotifyService] getSpotifyProfile IOException");
             e.printStackTrace();
-            return null;
+            throw new CustomException(ErrorCode.SPOTIFY_PROFILE_NOT_FOUND);
+        } catch (ParseException e) {
+            log.info("[SpotifyService] getSpotifyProfile ParseException");
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.SPOTIFY_PROFILE_NOT_FOUND);
+        } catch (SpotifyWebApiException e) {
+            log.info("[SpotifyService] getSpotifyProfile SpotifyWebApiException");
+            e.printStackTrace();
+            throw new CustomException(ErrorCode.SPOTIFY_PROFILE_NOT_FOUND);
         }
     }
-
-
 }

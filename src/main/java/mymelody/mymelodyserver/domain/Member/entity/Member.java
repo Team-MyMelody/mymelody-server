@@ -17,9 +17,7 @@ public class Member extends BaseTimeEntity {
     private Long id;
 
     private String spotifyId;
-    private String name;
     private String nickname;
-    private String email;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("\"USER\"")
