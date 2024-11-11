@@ -35,7 +35,9 @@ public class SpotifyService {
     private final SpotifyApi spotifyApi = new SpotifyApi.Builder()
             .setClientId(clientId).setClientSecret(clientSecret)
             .build();
+
     public String getAccessToken(String code) {
+        log.info("[SpotifyService] getAccessToken");
         AuthorizationCodeRequest authorizationCodeRequest = spotifyApi.authorizationCode(clientId, clientSecret, code, redirectURI).build();
         try {
             AuthorizationCodeCredentials authorizationCodeCredentials = authorizationCodeRequest.execute();
@@ -49,6 +51,7 @@ public class SpotifyService {
     }
 
     public User getSpotifyProfile(String accessToken) {
+        log.info("[SpotifyService] getSpotifyProfile");
         spotifyApi.setAccessToken(accessToken);
         GetCurrentUsersProfileRequest getCurrentUsersProfileRequest = spotifyApi.getCurrentUsersProfile().build();
         try {
