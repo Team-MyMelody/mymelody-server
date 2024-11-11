@@ -52,7 +52,7 @@ public class FollowController {
     @Parameter(name = "memberId", description = "팔로워 목록을 알고 싶은 사용자의 id")
     @GetMapping("/{memberId}/follower")
     public GetFollowPage getFollowerPage(@PathVariable Long memberId, PageRequest pageRequest) {
-        log.info("[FollowController] getFollowerList");
+        log.info("[FollowController] getFollowerPage");
         return followService.getFollowerPage(memberId, pageRequest);
     }
 
