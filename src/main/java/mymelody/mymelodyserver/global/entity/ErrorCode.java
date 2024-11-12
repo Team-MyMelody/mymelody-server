@@ -21,7 +21,8 @@ public enum ErrorCode {
     SPOTIFY_PROFILE_NOT_FOUND(HttpStatus.NOT_FOUND, "스포티파이 계정 정보를 찾을 수 없습니다."),
     MYMELODY_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 마이멜로디를 찾을 수 없습니다."),
     LIKES_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 마이멜로디에 대한 좋아요를 찾을 수 없습니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
+    FOLLOWING_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "팔로우하려는 사용자를 찾을 수 없습니다.");
 
     // 409 CONFLICT
 
