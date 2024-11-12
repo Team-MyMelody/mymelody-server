@@ -25,7 +25,7 @@ public class MyMelodyCustomRepositoryImpl implements MyMelodyCustomRepository{
                                         longitude, latitude),
                                 Expressions.stringTemplate("POINT({0}, {1})",
                                         myMelody.longitude, myMelody.latitude)
-                        ).loe(String.valueOf(1000))
+                        ).loe(String.valueOf(100000))
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
