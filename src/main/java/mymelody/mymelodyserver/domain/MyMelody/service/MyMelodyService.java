@@ -49,9 +49,9 @@ public class MyMelodyService {
         Optional<Music> optionalMusic = musicRepository.findByIsrc(createMyMelody.getIsrc());
         Music music = optionalMusic.orElseGet(() -> musicRepository.save(new Music(createMyMelody.getIsrc())));
 
-        myMelodyRepository.save(createMyMelody.toEntity(member, music));
+        MyMelody myMelody = myMelodyRepository.save(createMyMelody.toEntity(member, music));
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(myMelody.getId());
     }
 
     public GetMyMelodies getMyMelodiesByLocationWithPagination(double latitude, double longitude,
