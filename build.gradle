@@ -38,7 +38,8 @@ dependencies {
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.0.4'
-    implementation 'com.github.Swaggy-Swagger:swagger-custom-java:fix~dependency-SNAPSHOT'
+
+    implementation 'com.github.Swaggy-Swagger:swagger-custom-java:1.0.1'
 
     // queryDsl
     implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
