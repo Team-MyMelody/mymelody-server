@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.util.Optional;
@@ -32,9 +33,13 @@ public class AuthService {
         String accessToken = spotifyService.getAccessToken(code);
         User spotifyProfile = spotifyService.getSpotifyProfile(accessToken);
 
+        if (!StringUtils.hasText(spotifyProfile.getId())) {
+            throw new CustomException(ErrorCode.SPOTIFY_PROFILE_NOT_FOUND);
+        }
+
         Optional<Member> optionalMember = memberRepository.findBySpotifyId(spotifyProfile.getId());
 
-        if (memberRepository.findBySpotifyId(spotifyProfile.getId()).isPresent()) {
+        if (optionalMember.isPresent()) {
             log.info("[AuthService] signIn");
             Member member = optionalMember.get();
 
@@ -79,5 +84,12 @@ public class AuthService {
 
         log.info("[AuthService] logout");
         return ResponseEntity.ok().build();
+    }
+
+    public String test(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return member.getNickname();
     }
 }

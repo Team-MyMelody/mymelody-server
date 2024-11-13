@@ -7,14 +7,18 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import mymelody.mymelodyserver.domain.Comment.dto.request.CreateComment;
 import mymelody.mymelodyserver.domain.Comment.dto.response.GetCommentsByMyMelody;
 import mymelody.mymelodyserver.domain.Comment.service.CommentService;
+import mymelody.mymelodyserver.global.auth.security.CustomUserDetails;
 import mymelody.mymelodyserver.global.common.PageRequest;
 import mymelody.mymelodyserver.global.entity.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/comment")
 @RequiredArgsConstructor
+@Tag(name = "Comment", description = "코멘트 API")
 public class CommentController {
 
     private final CommentService commentService;
@@ -40,9 +45,9 @@ public class CommentController {
             )
     })
     @PostMapping
-    public ResponseEntity<Void> createComment(@RequestBody CreateComment createComment) {
-        // TODO spring security 적용 후 authenticationPrincipal로 사용자 정보 받아오는 코드 추가
-        commentService.createComment(createComment, 1L);
+    public ResponseEntity<Void> createComment(@RequestBody CreateComment createComment,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        commentService.createComment(createComment, customUserDetails.getMemberId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -57,7 +62,32 @@ public class CommentController {
     })
     @GetMapping("/mymelody/{myMelodyId}")
     public ResponseEntity<GetCommentsByMyMelody> getCommentsByMyMelody(@PathVariable Long myMelodyId,
-            PageRequest pageRequest) {
-        return ResponseEntity.ok(commentService.getCommentsByMyMelody(myMelodyId, pageRequest));
+            PageRequest pageRequest, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(commentService.getCommentsByMyMelody(myMelodyId, pageRequest,
+                customUserDetails == null ? 0 : customUserDetails.getMemberId()));
+    }
+
+    @Operation(summary = "comment 삭제")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "400", description = "삭제를 요청한 사용자가 작성한 댓글이 아님",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = """
+                    1. 존재하지 않는 사용자
+                    2. 존재하지 않는 comment""",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @Parameters({
+            @Parameter(name = "commentId", description = "comment 아이디")
+    })
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        commentService.deleteComment(commentId, customUserDetails.getMemberId());
+        return ResponseEntity.ok().build();
     }
 }

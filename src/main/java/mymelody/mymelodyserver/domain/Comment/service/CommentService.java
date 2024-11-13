@@ -34,15 +34,36 @@ public class CommentService {
                 () -> new CustomException(ErrorCode.MYMELODY_NOT_FOUND));
 
         commentRepository.save(createComment.toEntity(member, myMelody));
+        myMelody.increaseTotalComments();
     }
 
-    public GetCommentsByMyMelody getCommentsByMyMelody(Long myMelodyId, PageRequest pageRequest) {
+    public GetCommentsByMyMelody getCommentsByMyMelody(Long myMelodyId, PageRequest pageRequest,
+            Long memberId) {
         MyMelody myMelody = myMelodyRepository.findById(myMelodyId).orElseThrow(
                 () -> new CustomException(ErrorCode.MYMELODY_NOT_FOUND));
 
         Pageable pageable = pageRequest.of();
         Page<Comment> comments = commentRepository.findAllByMyMelody(myMelody, pageable);
 
-        return GetCommentsByMyMelody.of(comments);
+        if (memberId != 0 && !memberRepository.existsById(memberId)) {
+            throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
+        return GetCommentsByMyMelody.of(comments, memberId);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, Long memberId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        if (!comment.getMember().equals(member)) {
+            throw new CustomException(ErrorCode.INVALID_COMMENT_DELETE_REQUEST);
+        }
+
+        commentRepository.delete(comment);
+        comment.getMyMelody().decreaseTotalComments();
     }
 }

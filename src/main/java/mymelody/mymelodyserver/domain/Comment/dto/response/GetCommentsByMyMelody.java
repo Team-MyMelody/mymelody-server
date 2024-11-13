@@ -15,8 +15,8 @@ public class GetCommentsByMyMelody {
     private final long totalElements;
     private final List<CommentInfo> commentInfos;
 
-    public static GetCommentsByMyMelody of(Page<Comment> comments) {
+    public static GetCommentsByMyMelody of(Page<Comment> comments, Long memberId) {
         return new GetCommentsByMyMelody(comments.getTotalPages(), comments.getTotalElements(),
-                CommentInfo.of(comments.getContent()));
+                CommentInfo.of(comments.getContent(), memberId));
     }
 }
