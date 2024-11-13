@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mymelody.mymelodyserver.global.auth.dto.response.MemberInfo;
 import mymelody.mymelodyserver.global.auth.dto.response.TokenDto;
 import mymelody.mymelodyserver.global.auth.jwt.JwtTokenProvider;
 import mymelody.mymelodyserver.global.auth.security.CustomUserDetails;
