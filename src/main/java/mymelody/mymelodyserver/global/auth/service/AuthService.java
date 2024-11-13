@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import mymelody.mymelodyserver.domain.Member.entity.Member;
 import mymelody.mymelodyserver.domain.Member.entity.Role;
 import mymelody.mymelodyserver.domain.Member.repository.MemberRepository;
+import mymelody.mymelodyserver.global.auth.dto.response.MemberInfo;
 import mymelody.mymelodyserver.global.auth.dto.response.TokenDto;
 import mymelody.mymelodyserver.global.auth.jwt.JwtTokenProvider;
 import mymelody.mymelodyserver.global.entity.ErrorCode;
@@ -84,5 +85,12 @@ public class AuthService {
 
         log.info("[AuthService] logout");
         return ResponseEntity.ok().build();
+    }
+
+    public String test(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        return member.getNickname();
     }
 }

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mymelody.mymelodyserver.global.auth.dto.response.MemberInfo;
 import mymelody.mymelodyserver.global.auth.dto.response.TokenDto;
 import mymelody.mymelodyserver.global.auth.jwt.JwtTokenProvider;
 import mymelody.mymelodyserver.global.auth.security.CustomUserDetails;
@@ -61,9 +62,9 @@ public class AuthController {
         return authService.logout(token);
     }
 
-    @Operation(summary = "테스트용 - 토큰에 담긴 사용자 id 반환")
+    @Operation(summary = "테스트용 - 토큰에 담긴 사용자 정보 반환")
     @GetMapping("/test")
     public String test(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return userDetails.getUsername();
+        return authService.test(Long.valueOf(userDetails.getUsername()));
     }
 }
